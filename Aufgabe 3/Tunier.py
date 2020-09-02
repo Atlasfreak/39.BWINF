@@ -36,16 +36,19 @@ def simulateFights(strengthP1, strengthP2, times):
     return (winsP1/winsP2, winsP1, winsP2)
 
 def evalLeague(winList):
-    pass
+    maxVal = max(winList)
+    return winList.index(maxVal)
 
 def league(playerStrengthList):
     wins = [0] * len(playerStrengthList)
+    
     for p1 in range(len(playerStrengthList)-1):
-        for p2 in range(len(playerStrengthList)-1-p1):
-            p2 += p1
+        for p2 in range(p1+1, len(playerStrengthList)):
+
+            print(playerStrengthList[p1], playerStrengthList[p2])
             if fight(playerStrengthList[p1], playerStrengthList[p2]):
                 wins[p2] += 1
             else:
                 wins[p1] += 1
-    
-    
+    print(wins)
+    return evalLeague(wins)
