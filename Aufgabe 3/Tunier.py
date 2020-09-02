@@ -35,16 +35,6 @@ def simulateFights(strengthP1, strengthP2, times):
             winsP1 += 1
     return (winsP1/winsP2, winsP1, winsP2)
 
-# def evalLeague(winList):
-#     '''
-#     winList = list
-
-#     Wertet die Ergebnisse einer Liga aus.
-#     Gibt den Gewinner der Liga zurück.
-#     '''
-#     maxVal = max(winList)
-#     return winList.index(maxVal)
-
 def league(playerStrengthList):
     '''
     playerStrengthList = list
