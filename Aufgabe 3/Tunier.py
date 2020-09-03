@@ -1,5 +1,8 @@
 from random import *
 
+from tkinter import *
+from tkinter import filedialog
+
 def fight(strengthP1, strengthP2):
     '''  
     strengthP1 = int
@@ -113,3 +116,80 @@ def k_o_tournament(playerStrengthList, fightCount):
     print(playerStrength2DList)
     winner = playerStrength2DList[0][0]
     return winner
+
+# GUI erstellen
+
+def updateStrength():
+    selected = choiceStrength.get()
+    if selected == 1:
+        selectFileButton.config(state = 'disabled')
+        playerCountEntry.config(state = 'normal')
+    elif selected == 2:
+        selectFileButton.config(state = 'normal')
+        playerCountEntry.config(state = 'disabled')
+
+def fileButtonAction():
+    fileName = filedialog.askopenfilename(initialdir ='C:', title='Datei öffnen', filetypes=(('Text Dateien', '.txt'),('Alle Dateien','*.*')))
+    print(fileName)
+
+root = Tk()
+
+root.title('Tunier Simulator (Aufgabe 3)')
+
+rootFrame = Frame(root)
+rootFrame.pack(pady = 5)
+
+chkTypeColor = '#66e8ff'
+chkTypeFrame = LabelFrame(rootFrame, bg = chkTypeColor, text = 'Turnierform wählen')
+chkTypeFrame.pack(fill = BOTH, padx = 10, pady = 10)
+
+choiceType = IntVar()
+chkTypeLeague = Radiobutton(chkTypeFrame, text = 'Liga', variable = choiceType, value = 1, bg = chkTypeColor, activebackground = chkTypeColor)
+chkTypeLeague.grid(row = 0, sticky = W, pady = 5)
+
+chkTypeKO = Radiobutton(chkTypeFrame, text = 'K.O. Tunier', variable = choiceType, value = 2, bg = chkTypeColor, activebackground = chkTypeColor)
+chkTypeKO.grid(row = 1, sticky = W, pady = 5)
+
+chkStrengthColor = '#ffff80'
+chkStrengthFrame = LabelFrame(rootFrame, bg = chkStrengthColor, text = 'Spielerstärken')
+chkStrengthFrame.pack(fill = BOTH, padx = 10, pady = 10)
+
+choiceStrength = IntVar()
+chkStrengthRandom = Radiobutton(chkStrengthFrame, text = 'zufällig', variable = choiceStrength, value = 1, bg = chkStrengthColor, activebackground = chkStrengthColor, command = updateStrength)
+chkStrengthRandom.grid(row = 0, sticky = W, pady = 5)
+
+playerCountFrame = Frame(chkStrengthFrame, bg = chkStrengthColor)
+playerCountFrame.grid(row = 0, column = 1, sticky = W, pady = 5, padx = 5)
+
+playerCountLabel = Label(playerCountFrame, text = 'Spieler 2^', bg = chkStrengthColor)
+playerCountLabel.pack(side = LEFT)
+
+playerCountEntry = Entry(playerCountFrame, width = 10, state = 'disabled')
+playerCountEntry.pack(side = LEFT)
+
+chkStrengthFile = Radiobutton(chkStrengthFrame, text = 'aus Datei', variable = choiceStrength, value = 2, bg = chkStrengthColor, activebackground = chkStrengthColor, command = updateStrength)
+chkStrengthFile.grid(row = 1, sticky = W, pady = 5)
+
+selectFileButton = Button(chkStrengthFrame, text = 'Datei auswählen', state = 'disabled', command = fileButtonAction)
+selectFileButton.grid(row = 1, column = 1, sticky = W, padx = 5, pady = 5)
+
+startSimButton = Button(rootFrame, text = 'Simulieren')
+startSimButton.pack()
+
+resultColor = '#77ff33'
+resultFrame = LabelFrame(rootFrame, text = 'Ergebnisse des Tuniers', bg = resultColor)
+resultFrame.pack(fill = BOTH, pady = 10, padx = 10)
+
+resultIndexTxtLabel = Label(resultFrame, text = 'Gewinnerindex:', bg = resultColor)
+resultIndexTxtLabel.grid(row = 0, sticky = W)
+
+resultIndexValLabel = Label(resultFrame, text = '7', bg = '#cccccc')
+resultIndexValLabel.grid(row = 0, column = 1, sticky = W)
+
+resultStrengthTxtLabel = Label(resultFrame, text = 'Gewinnerstärke:', bg = resultColor)
+resultStrengthTxtLabel.grid(row = 1, sticky = W)
+
+resultStrengthValLabel = Label(resultFrame, text = '7', bg = '#cccccc')
+resultStrengthValLabel.grid(row = 1, column = 1, sticky = W)
+
+root.mainloop()
