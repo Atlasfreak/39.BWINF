@@ -46,20 +46,18 @@ def league(playerStrengthList):
     playerStrengthList = list
 
     Simuliert ein Liga in der jeder Spieler gegen jeden anderen Spieler antritt.
-    Gibt den Gewinner der Liga zurück.
+    Gibt die ID und Kampfstärke des Gewinners aus.
     '''
     wins = [0] * len(playerStrengthList)
     
     for p1 in range(len(playerStrengthList)-1):
         for p2 in range(p1+1, len(playerStrengthList)):
-
-            print(playerStrengthList[p1], playerStrengthList[p2])
             if fight(playerStrengthList[p1], playerStrengthList[p2]):
                 wins[p2] += 1
             else:
                 wins[p1] += 1
     winner = wins.index(max(wins))
-    return winner
+    return [winner, playerStrengthList[winner]]
 
 def createPlayerStrength2DList(playerStrengthList):
     '''
@@ -96,12 +94,10 @@ def k_o_round(playerStrength2DList, count):
             else:
                 winsP1 += 1
             counter -= 1
-            print(winsP1, winsP2)
         if winsP1 > winsP2:
             remainingPlayerStrength2DList.append(p1)
         elif winsP2 > winsP1:
             remainingPlayerStrength2DList.append(p2)
-        print(remainingPlayerStrength2DList)
 
     return remainingPlayerStrength2DList
 
@@ -111,13 +107,13 @@ def k_o_tournament(playerStrengthList, fightCount):
     fightCount = int            # muss ungerade sein
 
     Simuliert ein K.O. Tunier.
-    Gibt die ID des Gewinners aus.
+    Gibt die ID und Kampfstärke des Gewinners aus.
     '''
     playerStrength2DList = createPlayerStrength2DList(playerStrengthList)
     while len(playerStrength2DList) > 1:
         playerStrength2DList = k_o_round(playerStrength2DList, fightCount)
     print(playerStrength2DList)
-    winner = playerStrength2DList[0][0]
+    winner = playerStrength2DList[0]
     return winner
 
 def generatePlayerStrengthList(playerCount):
@@ -142,7 +138,35 @@ def updateStrength():
 
 def fileButtonAction():
     fileName = filedialog.askopenfilename(initialdir ='C:', title='Datei öffnen', filetypes=(('Text Dateien', '.txt'),('Alle Dateien','*.*')))
+    if fileName:
+        selectFileButton.config(text = fileName)
+    else:
+        selectFileButton.config(text = 'Datei auswählen')
     print(fileName)
+
+def startSimulation():
+    chkTypeFrame.config(bg = chkTypeColor)
+    chkStrengthFrame.config(bg = chkStrengthColor)
+    if not choiceType.get() or not choiceStrength.get():
+        if not choiceType.get():
+            chkTypeFrame.config(bg = 'red')
+        if not choiceStrength.get():
+            chkStrengthFrame.config(bg = 'red')
+        return
+    
+    playerStrengthList = []
+    if choiceStrength.get() == 1:
+        playerStrengthList = generatePlayerStrengthList(2**int(playerCountEntry.get()))
+    elif choiceStrength.get() == 2:
+        playerStrengthList = readFile(selectFileButton.cget('text'))
+    print(playerStrengthList)
+    winner = []
+    if choiceType.get() == 1:
+        winner = league(playerStrengthList)
+    elif choiceType.get() == 2:
+        winner = k_o_tournament(playerStrengthList, 1)
+    resultIndexValLabel.config(text = winner[0])
+    resultStrengthValLabel.config(text = winner[1])
 
 root = Tk()
 
@@ -176,7 +200,7 @@ playerCountFrame.grid(row = 0, column = 1, sticky = W, pady = 5, padx = 5)
 playerCountLabel = Label(playerCountFrame, text = 'Spieler 2^', bg = chkStrengthColor)
 playerCountLabel.pack(side = LEFT)
 
-playerCountEntry = Entry(playerCountFrame, width = 10, state = 'disabled')
+playerCountEntry = Spinbox(playerCountFrame, width = 10, state = 'disabled', from_ = 1, to = 15)
 playerCountEntry.pack(side = LEFT)
 
 chkStrengthFile = Radiobutton(chkStrengthFrame, text = 'aus Datei', variable = choiceStrength, value = 2, bg = chkStrengthColor, activebackground = chkStrengthColor, command = updateStrength)
@@ -185,7 +209,7 @@ chkStrengthFile.grid(row = 1, sticky = W, pady = 5)
 selectFileButton = Button(chkStrengthFrame, text = 'Datei auswählen', state = 'disabled', command = fileButtonAction)
 selectFileButton.grid(row = 1, column = 1, sticky = W, padx = 5, pady = 5)
 
-startSimButton = Button(rootFrame, text = 'Simulieren')
+startSimButton = Button(rootFrame, text = 'Simulieren', command = startSimulation)
 startSimButton.pack()
 
 resultColor = '#77ff33'
@@ -193,15 +217,15 @@ resultFrame = LabelFrame(rootFrame, text = 'Ergebnisse des Tuniers', bg = result
 resultFrame.pack(fill = BOTH, pady = 10, padx = 10)
 
 resultIndexTxtLabel = Label(resultFrame, text = 'Gewinnerindex:', bg = resultColor)
-resultIndexTxtLabel.grid(row = 0, sticky = W)
+resultIndexTxtLabel.grid(row = 0, sticky = W, pady = 5)
 
-resultIndexValLabel = Label(resultFrame, text = '7', bg = '#cccccc')
-resultIndexValLabel.grid(row = 0, column = 1, sticky = W)
+resultIndexValLabel = Label(resultFrame, bg = '#cccccc')
+resultIndexValLabel.grid(row = 0, column = 1, sticky = W, pady = 5)
 
 resultStrengthTxtLabel = Label(resultFrame, text = 'Gewinnerstärke:', bg = resultColor)
-resultStrengthTxtLabel.grid(row = 1, sticky = W)
+resultStrengthTxtLabel.grid(row = 1, sticky = W, pady = 5)
 
-resultStrengthValLabel = Label(resultFrame, text = '7', bg = '#cccccc')
-resultStrengthValLabel.grid(row = 1, column = 1, sticky = W)
+resultStrengthValLabel = Label(resultFrame, bg = '#cccccc')
+resultStrengthValLabel.grid(row = 1, column = 1, sticky = W, pady = 5)
 
 root.mainloop()
