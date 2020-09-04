@@ -120,6 +120,12 @@ def k_o_tournament(playerStrengthList, fightCount):
     winner = playerStrength2DList[0][0]
     return winner
 
+def generatePlayerStrengthList(playerCount):
+    playerStrengthList = []
+    for _ in range(playerCount):
+        playerStrengthList.append(randint(0,100))
+    return playerStrengthList
+
 # GUI erstellen
 
 def updateStrength():
