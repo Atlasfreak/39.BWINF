@@ -112,7 +112,6 @@ def k_o_tournament(playerStrengthList, fightCount):
     playerStrength2DList = createPlayerStrength2DList(playerStrengthList)
     while len(playerStrength2DList) > 1:
         playerStrength2DList = k_o_round(playerStrength2DList, fightCount)
-    print(playerStrength2DList)
     winner = playerStrength2DList[0]
     return winner
 
@@ -131,6 +130,12 @@ def readFile(fileName):
     return playerStrengthList
 
 # GUI erstellen
+def updateType():
+    selected = choiceType.get()
+    if selected == 1:
+        fightCountEntry.config(state = 'disabled')
+    elif selected == 2:
+        fightCountEntry.config(state = 'normal')
 
 def updateStrength():
     selected = choiceStrength.get()
@@ -169,7 +174,7 @@ def startSimulation():
     if choiceType.get() == 1:
         winner = league(playerStrengthList)
     elif choiceType.get() == 2:
-        winner = k_o_tournament(playerStrengthList, 1)
+        winner = k_o_tournament(playerStrengthList, int(fightCountEntry.get()))
     resultIndexValLabel.config(text = winner[0])
     resultStrengthValLabel.config(text = winner[1])
 
@@ -185,11 +190,20 @@ chkTypeFrame = LabelFrame(rootFrame, bg = chkTypeColor, text = 'Turnierform wäh
 chkTypeFrame.pack(fill = BOTH, padx = 10, pady = 10)
 
 choiceType = IntVar()
-chkTypeLeague = Radiobutton(chkTypeFrame, text = 'Liga', variable = choiceType, value = 1, bg = chkTypeColor, activebackground = chkTypeColor)
+chkTypeLeague = Radiobutton(chkTypeFrame, text = 'Liga', variable = choiceType, value = 1, bg = chkTypeColor, activebackground = chkTypeColor, command = updateType)
 chkTypeLeague.grid(row = 0, sticky = W, pady = 5)
 
-chkTypeKO = Radiobutton(chkTypeFrame, text = 'K.O. Tunier', variable = choiceType, value = 2, bg = chkTypeColor, activebackground = chkTypeColor)
+chkTypeKO = Radiobutton(chkTypeFrame, text = 'K.O.', variable = choiceType, value = 2, bg = chkTypeColor, activebackground = chkTypeColor, command = updateType)
 chkTypeKO.grid(row = 1, sticky = W, pady = 5)
+
+fightCountFrame = Frame(chkTypeFrame, bg = chkTypeColor)
+fightCountFrame.grid(row = 1, column = 1, sticky = W, pady = 5, padx = 5)
+
+fightCountLabel = Label(fightCountFrame, text = 'Anzahl der Kämpfe pro Paar: ', bg = chkTypeColor)
+fightCountLabel.pack(side = LEFT)
+
+fightCountEntry = Spinbox(fightCountFrame, width = 2, state = 'disabled', from_ = 1, to = 99, increment = 2)
+fightCountEntry.pack(side = LEFT)
 
 chkStrengthColor = '#ffff80'
 chkStrengthFrame = LabelFrame(rootFrame, bg = chkStrengthColor, text = 'Spielerstärken')
