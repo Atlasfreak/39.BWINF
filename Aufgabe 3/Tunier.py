@@ -126,6 +126,9 @@ def generatePlayerStrengthList(playerCount):
         playerStrengthList.append(randint(0,100))
     return playerStrengthList
 
+def readFile(fileName):
+    pass
+
 # GUI erstellen
 
 def updateStrength():
