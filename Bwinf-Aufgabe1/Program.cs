@@ -45,6 +45,12 @@ namespace Bwinf_Aufgabe1
 				}
 			}
 
+			for(int i = 0; i < availableWords.Count; i++)
+			{
+				wordsToFind[i] = wordsToFind[i].ToLower();
+				availableWords[i] = availableWords[i].ToLower();
+			}
+
 			int maxLength = availableWords.OrderByDescending(word => word.Length).First().Length;
 
 			for (int wordLength = 1; wordLength <= maxLength; wordLength++)
