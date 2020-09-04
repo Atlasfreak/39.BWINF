@@ -123,7 +123,12 @@ def generatePlayerStrengthList(playerCount):
     return playerStrengthList
 
 def readFile(fileName):
-    pass
+    f = open(fileName)
+    players = int(f.readline())
+    playerStrengthList = []
+    for _ in range(players):
+        playerStrengthList.append(int(f.readline()))
+    return playerStrengthList
 
 # GUI erstellen
 
