@@ -12,6 +12,9 @@ def fight(strengthP1, strengthP2):
     False wenn Spieler 1 gewinnt
     '''
 
+    if strengthP1 + strengthP2 == 0:
+        return False
+
     rand = randint(1, strengthP1 + strengthP2)
     if rand <= strengthP2:
         # Spieler 2
