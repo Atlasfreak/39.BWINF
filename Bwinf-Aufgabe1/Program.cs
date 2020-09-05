@@ -12,6 +12,7 @@ namespace Bwinf_Aufgabe1
 	{
 		static void Main(string[] args)
 		{
+			List<List<string>> temp;
 			List<string> wordsToFind = new List<string>();
 			List<string> availableWords = new List<string>();
 			Dictionary<string, string> allWords = new Dictionary<string, string>();
@@ -23,86 +24,78 @@ namespace Bwinf_Aufgabe1
 			{
 				while (!File.Exists(filename))
 				{
-					Console.Write("Dateiname: ");
-					filename = Console.ReadLine();
-					Console.Clear();
+					filename = GetFilename();
 				}
 			}
-
-			using (StreamReader sr = new StreamReader(args.Length == 0 ? filename : args[0]))
+			else
 			{
-				while (sr.Peek() >= 0)
-				{
-					if (originalString.Length == 0)
-					{
-						originalString = sr.ReadLine();
-						wordsToFind = Regex.Replace(input: originalString, pattern: @",|!|\.", replacement: "").Split(' ').ToList();
-					}
-					else
-					{
-						availableWords = sr.ReadLine().Split(' ').ToList();
-					}
-				}
+				filename = args[0];
 			}
 
-			//Alle Wörter in lowercase umwandeln dass es keine Verwirrung zwischen z.b. "Es" und "es" gibt
-			for(int i = 0; i < availableWords.Count; i++)
+			while (true)
 			{
-				wordsToFind[i] = wordsToFind[i].ToLower();
-				availableWords[i] = availableWords[i].ToLower();
-			}
+				temp = ReadFromFile(filename);
+				originalString = temp[0][0];
+				wordsToFind = temp[1];
+				availableWords = temp[2];
 
-			int maxLength = availableWords.OrderByDescending(word => word.Length).First().Length;
+				int maxLength = availableWords.OrderByDescending(word => word.Length).First().Length;
 
-			for (int wordLength = 1; wordLength <= maxLength; wordLength++)
-			{
-				if (availableWords.Find(x => x.Length == wordLength) != null)
+				for (int wordLength = 1; wordLength <= maxLength; wordLength++)
 				{
-					//Alle Wörter gleicher Länge zusammenfassen
-					List<string> currentAvailableWords = availableWords.Where(word => word.Length == wordLength).ToList();
-					List<string> currentWordsToFind = wordsToFind.Where(word => word.Length == wordLength).ToList();
-					List<string> notUsedWords = new List<string>();
-					List<string> notUsedUnfinishedWords = new List<string>();
-
-					notUsedWords.AddRange(currentAvailableWords);
-					notUsedUnfinishedWords.AddRange(currentWordsToFind);
-					bool finished = false;
-					while (!finished)
+					if (availableWords.Find(x => x.Length == wordLength) != null)
 					{
-						for (int i = 0; i < currentWordsToFind.Count; i++)
+						//Alle Wörter gleicher Länge zusammenfassen
+						List<string> currentAvailableWords = availableWords.Where(word => word.Length == wordLength).ToList();
+						List<string> currentWordsToFind = wordsToFind.Where(word => word.Length == wordLength).ToList();
+						List<string> notUsedWords = new List<string>();
+						List<string> notUsedUnfinishedWords = new List<string>();
+
+						notUsedWords.AddRange(currentAvailableWords);
+						notUsedUnfinishedWords.AddRange(currentWordsToFind);
+						bool finished = false;
+						while (!finished)
 						{
-							if (notUsedUnfinishedWords.Contains(currentWordsToFind[i]))
+							for (int i = 0; i < currentWordsToFind.Count; i++)
 							{
-								List<string> wordsThatFit = WordsThatFit(currentWordsToFind[i], notUsedWords);
-								if (wordsThatFit.Count == 1)
+								if (notUsedUnfinishedWords.Contains(currentWordsToFind[i]))
 								{
-									notUsedWords.Remove(wordsThatFit[0]);
-									notUsedUnfinishedWords.Remove(currentWordsToFind[i]);
-									if (!allWords.ContainsKey(currentWordsToFind[i]))
-										allWords.Add(currentWordsToFind[i], wordsThatFit[0]);
+									List<string> wordsThatFit = WordsThatFit(currentWordsToFind[i], notUsedWords);
+									if (wordsThatFit.Count == 1)
+									{
+										notUsedWords.Remove(wordsThatFit[0]);
+										notUsedUnfinishedWords.Remove(currentWordsToFind[i]);
+										if (!allWords.ContainsKey(currentWordsToFind[i]))
+											allWords.Add(currentWordsToFind[i], wordsThatFit[0]);
+									}
 								}
 							}
-						}
-						if (notUsedUnfinishedWords.Count == 0)
-						{
-							finished = true;
+							if (notUsedUnfinishedWords.Count == 0)
+							{
+								finished = true;
+							}
 						}
 					}
 				}
-			}
-			foreach (string word in wordsToFind)
-			{
-				result += $"{allWords[word]} ";
-			}
-			for (int i = 0; i < originalString.Length; i++)
-			{
-				if (new char[] { ',', '.', '!' }.Contains(originalString[i]))
+				foreach (string word in wordsToFind)
 				{
-					result = result.Insert(i, originalString[i].ToString());
+					result += $"{allWords[word]} ";
 				}
+				for (int i = 0; i < originalString.Length; i++)
+				{
+					if (new char[] { ',', '.', '!' }.Contains(originalString[i]))
+					{
+						result = result.Insert(i, originalString[i].ToString());
+					}
+				}
+				Console.WriteLine(result);
+				Console.Write("Press any key to continue. . .");
+				Console.ReadKey();
+
+				allWords.Clear();
+				result = string.Empty;
+				filename = GetFilename();
 			}
-			Console.WriteLine(result);
-			Console.ReadKey();
 		}
 
 		/// <summary>
@@ -137,6 +130,43 @@ namespace Bwinf_Aufgabe1
 				}
 			}
 			return wordsFit;
+		}
+
+		static string GetFilename()
+		{
+			string filename = string.Empty;
+			while (!File.Exists(filename))
+			{
+				Console.Clear();
+				Console.Write("Dateiname: ");
+				filename = Console.ReadLine();
+				Console.Clear();
+			}
+
+			return filename;
+		}
+
+		static List<List<string>> ReadFromFile(string filename)
+		{
+			string originalString = string.Empty;
+			List<List<string>> temp = new List<List<string>>();
+			using (StreamReader sr = new StreamReader(filename))
+			{
+				while (sr.Peek() >= 0)
+				{
+					if (originalString.Length == 0)
+					{
+						originalString = sr.ReadLine();
+						temp.Add(new List<string>() { originalString });
+						temp.Add(Regex.Replace(input: originalString, pattern: @",|!|\.", replacement: "").Split(' ').ToList());
+					}
+					else
+					{
+						temp.Add(sr.ReadLine().Split(' ').ToList());
+					}
+				}
+			}
+			return temp;
 		}
 	}
 }
