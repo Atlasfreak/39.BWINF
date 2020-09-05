@@ -70,10 +70,12 @@ namespace Bwinf_Aufgabe1
 											allWords.Add(currentWordsToFind[i], wordsThatFit[0]);
 									}
 								}
-							}
-							if (notUsedUnfinishedWords.Count == 0)
-							{
-								finished = true;
+
+								if (notUsedUnfinishedWords.Count == 0)
+								{
+									finished = true;
+									break;
+								}
 							}
 						}
 					}
