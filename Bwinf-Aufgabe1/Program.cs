@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.IO;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Bwinf_Aufgabe1
 {
@@ -43,7 +41,7 @@ namespace Bwinf_Aufgabe1
 
 				for (int wordLength = 1; wordLength <= maxLength; wordLength++)
 				{
-					if (availableWords.Find(x => x.Length == wordLength) != null)
+					if (availableWords.Find(word => word.Length == wordLength) != null)
 					{
 						//Alle Wörter gleicher Länge zusammenfassen
 						List<string> currentAvailableWords = availableWords.Where(word => word.Length == wordLength).ToList();
@@ -61,6 +59,7 @@ namespace Bwinf_Aufgabe1
 								if (notUsedUnfinishedWords.Contains(currentWordsToFind[i]))
 								{
 									List<string> wordsThatFit = WordsThatFit(currentWordsToFind[i], notUsedWords);
+									//Wenn nur ein Wort passt kann dieses direkt eingesetzt werden
 									if (wordsThatFit.Count == 1)
 									{
 										notUsedWords.Remove(wordsThatFit[0]);
