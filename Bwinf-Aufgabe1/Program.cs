@@ -45,6 +45,7 @@ namespace Bwinf_Aufgabe1
 				}
 			}
 
+			//Alle Wörter in lowercase umwandeln dass es keine Verwirrung zwischen z.b. "Es" und "es" gibt
 			for(int i = 0; i < availableWords.Count; i++)
 			{
 				wordsToFind[i] = wordsToFind[i].ToLower();
@@ -57,12 +58,12 @@ namespace Bwinf_Aufgabe1
 			{
 				if (availableWords.Find(x => x.Length == wordLength) != null)
 				{
+					//Alle Wörter gleicher Länge zusammenfassen
 					List<string> currentAvailableWords = availableWords.Where(word => word.Length == wordLength).ToList();
 					List<string> currentWordsToFind = wordsToFind.Where(word => word.Length == wordLength).ToList();
 					List<string> notUsedWords = new List<string>();
 					List<string> notUsedUnfinishedWords = new List<string>();
 
-					Dictionary<string, string> finishedPairs = new Dictionary<string, string>();
 					notUsedWords.AddRange(currentAvailableWords);
 					notUsedUnfinishedWords.AddRange(currentWordsToFind);
 					bool finished = false;
@@ -85,7 +86,6 @@ namespace Bwinf_Aufgabe1
 						if (notUsedUnfinishedWords.Count == 0)
 						{
 							finished = true;
-							break;
 						}
 					}
 				}
