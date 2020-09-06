@@ -20,10 +20,7 @@ namespace Bwinf_Aufgabe1
 
 			if (args.Length == 0)
 			{
-				while (!File.Exists(filename))
-				{
-					filename = GetFilename();
-				}
+				filename = GetFilename();
 			}
 			else
 			{
