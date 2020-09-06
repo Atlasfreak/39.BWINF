@@ -37,6 +37,8 @@ namespace Bwinf_Aufgabe1
 				wordsToFind = temp[1];
 				availableWords = temp[2];
 
+				Console.WriteLine($"Originaler Satz:\n{originalString}\n");
+
 				int maxLength = availableWords.OrderByDescending(word => word.Length).First().Length;
 
 				for (int wordLength = 1; wordLength <= maxLength; wordLength++)
@@ -68,10 +70,12 @@ namespace Bwinf_Aufgabe1
 											allWords.Add(currentWordsToFind[i], wordsThatFit[0]);
 									}
 								}
-							}
-							if (notUsedUnfinishedWords.Count == 0)
-							{
-								finished = true;
+
+								if (notUsedUnfinishedWords.Count == 0)
+								{
+									finished = true;
+									break;
+								}
 							}
 						}
 					}
@@ -87,8 +91,8 @@ namespace Bwinf_Aufgabe1
 						result = result.Insert(i, originalString[i].ToString());
 					}
 				}
-				Console.WriteLine(result);
-				Console.Write("Press any key to continue. . .");
+				Console.WriteLine($"Ergebnis:\n{result}");
+				Console.Write("\nEine beliebige Taste drücken um fortzufahren. . .");
 				Console.ReadKey();
 
 				allWords.Clear();
