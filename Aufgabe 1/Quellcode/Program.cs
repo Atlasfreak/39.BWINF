@@ -50,8 +50,8 @@ namespace Bwinf_Aufgabe1
 					if (availableWords.Find(word => word.Length == wordLength) != null)
 					{
 						//Alle Wörter gleicher Länge zusammenfassen
-						List<string> currentAvailableWords = availableWords.Where(word => word.Length == wordLength).ToList();
-						List<string> currentWordsToFind = wordsToFind.Where(word => word.Length == wordLength).ToList();
+						string[] currentAvailableWords = availableWords.Where(word => word.Length == wordLength).ToArray();
+						string[] currentWordsToFind = wordsToFind.Where(word => word.Length == wordLength).ToArray();
 						//Kopien der Listen erstellen aus denen man Elemente entfernen kann ohne dass es zu Index Problemen kommt
 						List<string> notUsedWords = new List<string>();
 						List<string> notUsedUnfinishedWords = new List<string>();
@@ -61,7 +61,7 @@ namespace Bwinf_Aufgabe1
 						bool finished = false;
 						while (!finished)
 						{
-							for (int i = 0; i < currentWordsToFind.Count; i++)
+							for (int i = 0; i < currentWordsToFind.Length; i++)
 							{
 								if (notUsedUnfinishedWords.Contains(currentWordsToFind[i]))
 								{
