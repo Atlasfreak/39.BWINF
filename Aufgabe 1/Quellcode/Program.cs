@@ -20,10 +20,7 @@ namespace Bwinf_Aufgabe1
 
 			if (args.Length == 0)
 			{
-				while (!File.Exists(filename))
-				{
-					filename = GetFilename();
-				}
+				filename = GetFilename();
 			}
 			else
 			{
@@ -32,6 +29,7 @@ namespace Bwinf_Aufgabe1
 
 			while (true)
 			{
+				//Input
 				temp = ReadFromFile(filename);
 				originalString = temp[0][0];
 				wordsToFind = temp[1];
@@ -39,24 +37,28 @@ namespace Bwinf_Aufgabe1
 
 				Console.WriteLine($"Originaler Satz:\n{originalString}\n");
 
+				//maximale Wortlänge herausfinden
 				int maxLength = availableWords.OrderByDescending(word => word.Length).First().Length;
 
+				//über jede mögliche Wortlänge iterieren
 				for (int wordLength = 1; wordLength <= maxLength; wordLength++)
 				{
+					//Wenn es kein Wort mit der Länge wordLength gibt soll diese nicht beachtet werden
 					if (availableWords.Find(word => word.Length == wordLength) != null)
 					{
 						//Alle Wörter gleicher Länge zusammenfassen
-						List<string> currentAvailableWords = availableWords.Where(word => word.Length == wordLength).ToList();
-						List<string> currentWordsToFind = wordsToFind.Where(word => word.Length == wordLength).ToList();
+						string[] currentAvailableWords = availableWords.Where(word => word.Length == wordLength).ToArray();
+						string[] currentWordsToFind = wordsToFind.Where(word => word.Length == wordLength).ToArray();
+						//Kopien der Listen erstellen aus denen man Elemente entfernen kann ohne dass es zu Index Problemen kommt
 						List<string> notUsedWords = new List<string>();
 						List<string> notUsedUnfinishedWords = new List<string>();
-
 						notUsedWords.AddRange(currentAvailableWords);
 						notUsedUnfinishedWords.AddRange(currentWordsToFind);
+
 						bool finished = false;
 						while (!finished)
 						{
-							for (int i = 0; i < currentWordsToFind.Count; i++)
+							for (int i = 0; i < currentWordsToFind.Length; i++)
 							{
 								if (notUsedUnfinishedWords.Contains(currentWordsToFind[i]))
 								{
@@ -80,10 +82,12 @@ namespace Bwinf_Aufgabe1
 						}
 					}
 				}
+				//Zusammenbauen vom Output string
 				foreach (string word in wordsToFind)
 				{
 					result += $"{allWords[word]} ";
 				}
+				//Einfügen von Sonderzeichen falls vorhanden
 				for (int i = 0; i < originalString.Length; i++)
 				{
 					if (new char[] { ',', '.', '!' }.Contains(originalString[i]))
@@ -91,6 +95,7 @@ namespace Bwinf_Aufgabe1
 						result = result.Insert(i, originalString[i].ToString());
 					}
 				}
+				//Output
 				Console.WriteLine($"Ergebnis:\n{result}");
 				Console.Write("\nEine beliebige Taste drücken um fortzufahren. . .");
 				Console.ReadKey();
@@ -135,6 +140,9 @@ namespace Bwinf_Aufgabe1
 			return wordsFit;
 		}
 
+		/// <summary>
+		/// Bekommt einen Dateinamen vom Nutzer. Wenn dieser nicht existiert wird erneut nachgefragt.
+		/// </summary>
 		static string GetFilename()
 		{
 			string filename = string.Empty;
@@ -149,6 +157,9 @@ namespace Bwinf_Aufgabe1
 			return filename;
 		}
 
+		/// <summary>
+		/// Liest eine Datei aus
+		/// </summary>
 		static List<List<string>> ReadFromFile(string filename)
 		{
 			string originalString = string.Empty;
