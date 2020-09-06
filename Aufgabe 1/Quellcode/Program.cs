@@ -46,6 +46,7 @@ namespace Bwinf_Aufgabe1
 				//über jede mögliche Wortlänge iterieren
 				for (int wordLength = 1; wordLength <= maxLength; wordLength++)
 				{
+					//Wenn es kein Wort mit der Länge wordLength gibt soll diese nicht beachtet werden
 					if (availableWords.Find(word => word.Length == wordLength) != null)
 					{
 						//Alle Wörter gleicher Länge zusammenfassen
