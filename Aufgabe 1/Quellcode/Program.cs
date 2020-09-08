@@ -122,13 +122,14 @@ namespace Bwinf_Aufgabe1
 		}
 
 		/// <summary>
-		/// Gibt zurück welche Wörter aus einer Wörterliste in ein Wort mit Lücken passen. Doppelte Wörter werden nur einfach berücksichtigt
+		/// Gibt zurück welche Wörter aus einer Wörterliste in ein Wort mit Lücken passen.
 		/// </summary>
 		static List<string> WordsThatFit(string unfinishedWord, List<string> possibleWords)
 		{
 			List<string> wordsFit = new List<string>();
 			foreach (string word in possibleWords)
 			{
+				//Wenn ein Wort passt aber doppelt ist, wird es nicht ein zweites mal berücksichtigt
 				if (WordsFit(unfinishedWord, word) && !wordsFit.Contains(word))
 				{
 					wordsFit.Add(word);
