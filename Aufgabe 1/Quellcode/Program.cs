@@ -11,8 +11,8 @@ namespace Bwinf_Aufgabe1
 		static void Main(string[] args)
 		{
 			List<List<string>> temp;
-			List<string> wordsToFind = new List<string>();
-			List<string> availableWords = new List<string>();
+			string[] wordsToFind;
+			string[] availableWords;
 			Dictionary<string, string> allWords = new Dictionary<string, string>();
 			string result = string.Empty;
 			string originalString = string.Empty;
@@ -32,19 +32,19 @@ namespace Bwinf_Aufgabe1
 				//Input
 				temp = ReadFromFile(filename);
 				originalString = temp[0][0];
-				wordsToFind = temp[1];
-				availableWords = temp[2];
+				wordsToFind = temp[1].ToArray();
+				availableWords = temp[2].ToArray();
 
 				Console.WriteLine($"Originaler Satz:\n{originalString}\n");
 
 				//maximale Wortlänge herausfinden
-				int maxLength = availableWords.OrderByDescending(word => word.Length).First().Length;
+				int maxLength = availableWords.OrderBy(word => word.Length).Last().Length;
 
 				//über jede mögliche Wortlänge iterieren
 				for (int wordLength = 1; wordLength <= maxLength; wordLength++)
 				{
 					//Wenn es kein Wort mit der Länge wordLength gibt soll diese nicht beachtet werden
-					if (availableWords.Find(word => word.Length == wordLength) != null)
+					if (availableWords.Count(word => word.Length == wordLength) > 0)
 					{
 						//Alle Wörter gleicher Länge zusammenfassen
 						string[] currentAvailableWords = availableWords.Where(word => word.Length == wordLength).ToArray();
@@ -113,25 +113,23 @@ namespace Bwinf_Aufgabe1
 		{
 			for (int i = 0; i < unfinishedWord.Length; i++)
 			{
-				if (unfinishedWord[i] != '_')
+				if (unfinishedWord[i] != '_' && unfinishedWord[i] != finishedWord[i])
 				{
-					if (unfinishedWord[i] != finishedWord[i])
-					{
-						return false;
-					}
+					return false;
 				}
 			}
 			return true;
 		}
 
 		/// <summary>
-		/// Gibt zurück welche Wörter aus einer Wörterliste in ein Wort mit Lücken passen. Doppelte Wörter werden nur einfach berücksichtigt
+		/// Gibt zurück welche Wörter aus einer Wörterliste in ein Wort mit Lücken passen.
 		/// </summary>
 		static List<string> WordsThatFit(string unfinishedWord, List<string> possibleWords)
 		{
 			List<string> wordsFit = new List<string>();
 			foreach (string word in possibleWords)
 			{
+				//Wenn ein Wort passt aber doppelt ist, wird es nicht ein zweites mal berücksichtigt
 				if (WordsFit(unfinishedWord, word) && !wordsFit.Contains(word))
 				{
 					wordsFit.Add(word);
