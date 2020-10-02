@@ -10,10 +10,10 @@ namespace Bwinf_Aufgabe1
 	{
 		static void Main(string[] args)
 		{
-			List<List<string>> temp;
+			Dictionary<string, string> allWords = new Dictionary<string, string>();
+			Tuple<string, string[], string[]> temp;
 			string[] wordsToFind;
 			string[] availableWords;
-			Dictionary<string, string> allWords = new Dictionary<string, string>();
 			string result = string.Empty;
 			string originalString = string.Empty;
 			string filename = string.Empty;
@@ -31,9 +31,9 @@ namespace Bwinf_Aufgabe1
 			{
 				//Input
 				temp = ReadFromFile(filename);
-				originalString = temp[0][0];
-				wordsToFind = temp[1].ToArray();
-				availableWords = temp[2].ToArray();
+				originalString = temp.Item1;
+				wordsToFind = temp.Item2;
+				availableWords = temp.Item3;
 
 				Console.WriteLine($"Originaler Satz:\n{originalString}\n");
 
@@ -87,10 +87,11 @@ namespace Bwinf_Aufgabe1
 				{
 					result += $"{allWords[word]} ";
 				}
+				char[] punctuationMarks = { ',', '.', '!' };
 				//Einfügen von Sonderzeichen falls vorhanden
 				for (int i = 0; i < originalString.Length; i++)
 				{
-					if (new char[] { ',', '.', '!' }.Contains(originalString[i]))
+					if (punctuationMarks.Contains(originalString[i]))
 					{
 						result = result.Insert(i, originalString[i].ToString());
 					}
@@ -158,10 +159,12 @@ namespace Bwinf_Aufgabe1
 		/// <summary>
 		/// Liest eine Datei aus
 		/// </summary>
-		static List<List<string>> ReadFromFile(string filename)
+		static Tuple<string, string[], string[]> ReadFromFile(string filename)
 		{
 			string originalString = string.Empty;
-			List<List<string>> temp = new List<List<string>>();
+			List<string> sentenceWordList = new List<string>();
+			List<string> availableWordList = new List<string>();
+
 			using (StreamReader sr = new StreamReader(filename))
 			{
 				while (sr.Peek() >= 0)
@@ -169,16 +172,15 @@ namespace Bwinf_Aufgabe1
 					if (originalString.Length == 0)
 					{
 						originalString = sr.ReadLine();
-						temp.Add(new List<string>() { originalString });
-						temp.Add(Regex.Replace(input: originalString, pattern: @",|!|\.", replacement: "").Split(' ').ToList());
+						sentenceWordList = Regex.Replace(input: originalString, pattern: @",|!|\.", replacement: "").Split(' ').ToList();
 					}
 					else
 					{
-						temp.Add(sr.ReadLine().Split(' ').ToList());
+						availableWordList = sr.ReadLine().Split(' ').ToList();
 					}
 				}
 			}
-			return temp;
+			return new Tuple<string, string[], string[]> (originalString, sentenceWordList.ToArray(), availableWordList.ToArray());
 		}
 	}
 }
